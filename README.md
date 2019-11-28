@@ -4,5 +4,5 @@
 `sudo find / -name ad71*` --> `/lib/modules/<ver>/kernel/driver/staging/iio/adc/ad7192.ko.xz`<br>
 *The Linux Staging tree (or just "staging" from now on) is used to hold stand-alone[1] drivers and filesystems that are not ready to be merged into the main portion of the Linux kernel tree at this point in time for various technical reasons.* -https://lwn.net/Articles/324279/ <br>
 
-**TODO: Porting from ad7192.c to ad7193.c**
-**Is the chosen AD7193 optimal for this project? I don't know. It turns out that I already have it**
+### 50/60 Hz rejection
+*There are several ways to do this (outlined on beginning on page 43 of the AD7193 datasheet), but I would recommend setting bits D9-D0 in the Mode Register to a value of 480 (0b0111100000). This will have the deepest rejection ratio (120 dB minimum) as it is using the default sync filter with 0 latency, although the settling time will increase from the default 80 ms to 400 ms, and the output data rate will decrease from the default 12.5 to 2.5 Hz.* -https://reference.digilentinc.com/pmod/pmod/ad5/user_guide
