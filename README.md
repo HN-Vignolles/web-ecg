@@ -5,4 +5,4 @@
 *The Linux Staging tree (or just "staging" from now on) is used to hold stand-alone[1] drivers and filesystems that are not ready to be merged into the main portion of the Linux kernel tree at this point in time for various technical reasons.* -https://lwn.net/Articles/324279/ <br>
 
 **TODO: Porting from ad7192.c to ad7193.c**
-**Is the choosen AD7193 optimal for this project? I don't know. It turns out that I already have it**
+**Is the chosen AD7193 optimal for this project? I don't know. It turns out that I already have it**
