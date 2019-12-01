@@ -1,18 +1,25 @@
 // overlay for ad7193 adc on spi0
 #include "subarctic/pinctrl.h"
 #include "bone/pins.h"
+#include "irq.h"
 
-&ocp {
-	P9_22_pinmux { status = "disabled"; };
-	P9_21_pinmux { status = "disabled"; };
-	P9_18_pinmux { status = "disabled"; };
-	P9_17_pinmux { status = "disabled"; };
-};
+// disable conflicting cape-universal nodes
+USES_PIN( P9_17 );  // cs 0
+USES_PIN( P9_18 );  // data out
+USES_PIN( P9_21 );  // data in
+USES_PIN( P9_22 );  // clk
+USES_PIN( P9_12 );  // irq
+
+// XXX apparently this doesn't work
+//&spi0 {
+//	spi0channel@0 {  status = "disabled";  };
+//	spi0channel@1 {  status = "disabled";  };
+//};
 
 &spi0 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&spi0_pins>;
-	ti,no-idle;
+	ti,spi-num-cs = <1>;
 	status = "okay";
 };
 
@@ -27,12 +34,48 @@
 	};
 };
 
+//rdy_irq_pin: phandle label
+//ad7193: should be unique within &am33xx_pinmux
+&am33xx_pinmux {
+	rdy_irq_pin: ad7193 {
+		pinctrl-single,pins = <
+			PIN_GPIN_PULLUP( P9_12 )
+		>;
+	};
+};
+
+/{
+	dvdd: dvdd-vref {
+		compatible = "regulator-fixed";
+		regulator-name = "dvdd_vref";
+		regulator-min-microvolt = <2500000>;
+		regulator-max-microvolt = <2500000>;
+		regulator-boot-on;
+	};
+};
+
+/{
+	avdd: avdd-vref {
+		compatible = "regulator-fixed";
+		regulator-name = "avdd_vref";
+		regulator-min-microvolt = <2500000>;
+		regulator-max-microvolt = <2500000>;
+		regulator-boot-on;
+	};
+};
+
 &spi0 {
-	ad7193@0 {
+	// XXX for now, use same names as cape-universal for compatibility
+	spi0channel@0 {
 		reg = <0>;
-		compatible = "ad7193";
+		compatible = "adi,ad7193";
 		spi-max-frequency = <10000000>;
-		spi-cpha;
 		spi-cpol;
+		spi-cpha;
+		dvdd-supply = <&dvdd>;
+		avdd-supply = <&avdd>;
+		interrupt-parent = <&gpio1>;
+		interrupts = <28 IRQ_TYPE_EDGE_FALLING>;
+		status = "okay";
 	};
 };
