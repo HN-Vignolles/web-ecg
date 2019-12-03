@@ -28,7 +28,7 @@ var pause0 = function() {
 	return new Promise(resolve => {
 		setTimeout(() => {
 			resolve("pause");
-		},100);
+		},0);
 	});
 };
 
@@ -60,7 +60,7 @@ var loop = function(task) {
 		return loop(task);
 	});
 };
-loop(calib);
+loop(main);
 
 httpd.listen(4000);
 function handler(req, res) {
