@@ -34,10 +34,20 @@ var pause0 = function() {
 
 var main = function() {
 	return new Promise(resolve => {
-		var contents = fs.readFileSync(v1v2_raw_fd,'utf8');
+		let contents = fs.readFileSync(v1v2_raw_fd,'utf8');
 		//var contents = fs.readFileSync(v1_raw_fd,'utf8');
 		payload[0] = contents * vvScale;
-		console.log(payload.toString());
+		//console.log(payload.toString());
+		io.sockets.emit('serverMessage',payload.toString());
+		resolve("done");
+	});
+};
+
+var calib = function() {
+	return new Promise(resolve => {
+		payload[0] = 0.0; //min
+		io.sockets.emit('serverMessage',payload.toString());
+		payload[0] = 2500.0; //max
 		io.sockets.emit('serverMessage',payload.toString());
 		resolve("done");
 	});
@@ -50,7 +60,7 @@ var loop = function(task) {
 		return loop(task);
 	});
 };
-loop(main);
+loop(calib);
 
 httpd.listen(4000);
 function handler(req, res) {

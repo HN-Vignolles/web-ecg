@@ -21,13 +21,14 @@ var wfColorBuffer = [];
 var socket = io.connect('http://' + ioip + ':4000');
 var pArray = [];
 
-var tX = -1, 
-	tY = 0,
+var tX = -24, 
+	tY = -0.33,
 	tZ = 0; //translation matrix
-var sX = 0.0008,/*0.0035,*/
-	sY = 0.0005,
+var sX = 0.01,/*0.0035,*/
+	sY = 0.0004,
 	sZ = 1; //scaling matrix
-
+var initY = 600.0,
+	stepY = -500.0;
 var ch_nr = 3;
 
 var wsmValue = document.getElementById("wsmValue"); //raw payload from server
@@ -124,7 +125,7 @@ function drawScene() /*animLoop*/
 		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(value[i]), gl.DYNAMIC_DRAW);
 	}
 
-	mat4.translate(mvMatrix, [0.0,1600.0,0.0]); //1600.0: Initial distance from bottom
+	mat4.translate(mvMatrix, [0.0,initY,0.0]); //1600.0: Initial distance from bottom
 	gl.uniformMatrix4fv(glProgram.mvMatrixUniform, false, mvMatrix);
 	gl.bindBuffer(gl.ARRAY_BUFFER, wfVertexBuffer[0]);//we assign the currently bound ARRAY_BUFFER target to this vertex attrib.
 	gl.vertexAttribPointer(vertexPositionAttribute, wfVertexBuffer[0].itemSize, gl.FLOAT, false, 0, 0);//let the shader know
@@ -135,7 +136,7 @@ function drawScene() /*animLoop*/
 	gl.drawArrays(gl.LINE_STRIP,0,wfVertexBuffer[0].numItems);
 
 	for(var i=1;i<ch_nr;i++){
-	mat4.translate(mvMatrix, [0.0,-500.0,0.0]); //accumulative separation between traces 
+	mat4.translate(mvMatrix, [0.0,stepY,0.0]); //accumulative separation between traces 
 	gl.uniformMatrix4fv(glProgram.mvMatrixUniform, false, mvMatrix);
 	gl.bindBuffer(gl.ARRAY_BUFFER, wfVertexBuffer[i]);
 	gl.vertexAttribPointer(vertexPositionAttribute, wfVertexBuffer[i].itemSize, gl.FLOAT, false, 0, 0);

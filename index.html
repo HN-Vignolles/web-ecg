@@ -19,7 +19,7 @@
                         <span class="label">wsm:</span><span id="wsmValue"></span><br>
                         <div class="slider-container">
                             <div class="s-label">escalaX</div>
-                            <div class="s-slider"><input type="range" min="0" max="100" value="50" id="sXSlider"></div>
+                            <div class="s-slider"><input type="range" min="0" max="100" value="100" id="sXSlider"></div>
                             <div class="s-value"><span id="sXValue">X</span></div>
                         </div>
 						<div class="slider-container">
@@ -33,16 +33,18 @@
         </div>
     </div>
 		<script>
-           var sXSlider = document.getElementById("sXSlider");
-            sXSlider.oninput = function(){
-                sX = this.value/10000;
-                sXValue.innerHTML = this.value;
-                }
+			var sXSlider = document.getElementById("sXSlider");
+			var sXValue = document.getElementById("sXValue");
+			sXSlider.oninput = function(){
+				sX = this.value/10000;
+				sXValue.innerHTML = this.value/10000;
+			}
 			var sYSlider = document.getElementById("sYSlider");
-            sYSlider.oninput = function(){
-                sY = this.value/10000;
-                sYValue.innerHTML = this.value;
-                }
+			var sYValue = document.getElementById("sYValue");
+			sYSlider.oninput = function(){
+				sY = this.value/10000;
+				sYValue.innerHTML = this.value/10000;
+			}
 			/******************************************************************************/
 			var ongoingTouches = [];
 			var el = document.getElementsByTagName("canvas")[0];//The first (0) canvas
