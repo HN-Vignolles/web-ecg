@@ -1,0 +1,118 @@
+html, body, div, span, applet, object,
+iframe, h1, h2, h3, h4, h5, h6, p, blockquote,
+pre, a, abbr, acronym, address, big, cite,
+code, del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var, b,
+u, i, center, dl, dt, dd, ol, ul, li, fieldset,
+form, label, legend, table, caption, tbody,
+tfoot, thead, tr, th, td, article, aside,
+canvas, details, embed, figure, figcaption,
+footer, header, hgroup, menu, nav, output, ruby,
+section, summary, time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	vertical-align: baseline;}
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;}
+@-ms-viewport{
+    width: device-width;
+}
+body{
+    background-color: #454545;
+}
+canvas{ 
+    background-color: white; 
+}
+body,input,select,textarea,p,span,div{
+    color: white;
+    font-family: sans-serif;
+}
+#wrapper{
+    display: flex;
+    flex-direction: row-reverse;
+    min-height: 100vh;
+}
+#main{
+    flex-grow: 1;
+    flex-shrink: 1;
+    width: 100%;
+}
+    #main > .inner{ /*will match all .iner that are nested directly inside #main*/
+        padding: 0 1em 0 1em;
+        margin: 0 auto;
+        max-width: 110em; /*Relative to the font-size of the element*/
+    }
+
+#sidebar{
+    flex-grow: 0;
+    flex-shrink: 0;
+    /*transitions allows you to change property values smoothly over a given duration*/
+    transition: margin-left 0.5s ease, box-shadow 0.5 ease;
+    background-color: #F2F4F6;
+    position: relative;
+    /* [...] */
+}
+
+/*EEG*/
+
+
+#eeg-container{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#eeg-container span.label{
+    color: #AAAAA;
+}
+
+#eeg-container .canvas-wgl{ /*will match all .canvas-wgl inside #eeg-container*/
+    height: 90vmax;
+    width: 90vmin;
+    margin: 0 auto;
+    padding: 2vh 0;
+}
+    @media screen and (orientation: landscape){
+        #eeg-container .canvas-wgl{
+            height: 95vmin;
+            width: 70vmax;
+        }
+    }
+
+#eeg-container .controls{
+    height: 100vmax;
+    width: 80vmin;
+    margin: 2em auto;
+    font-size: 2vh;
+}
+    @media screen and (orientation: landscape){
+        #eeg-container .controls{
+            height: auto;
+            width: 15vmax;
+            margin: 2em 2em 0 2em;
+            font-size: 2.5vh;
+    }
+}
+
+.slider-container{
+    padding: 2em 0 2em 0;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+.slider-container,.s-label{
+    flex: 0 1 1vw;
+    color: #FF2F2F;
+    margin-right: auto;
+}
+.slider-container,.s-slider{
+    flex: 0 1 5vw;
+}
+.slider-container,.s-value{
+    flex: 0 1 1vw;
+    margin-left: auto;
+    color: white;
+}

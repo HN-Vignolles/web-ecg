@@ -18,6 +18,8 @@ const vScale = fs.readFileSync(vScale_fd);
 const vvScale_fd = iio_p + "in_voltage-voltage_scale"; 
 const vvScale = fs.readFileSync(vvScale_fd);
 
+var payload = [0,0,0];
+
 process.on('SIGINT',() => {
 	process.exit(1);
 });
@@ -34,7 +36,9 @@ var main = function() {
 	return new Promise(resolve => {
 		var contents = fs.readFileSync(v1v2_raw_fd,'utf8');
 		//var contents = fs.readFileSync(v1_raw_fd,'utf8');
-		console.log(contents * vvScale);
+		payload[0] = contents * vvScale;
+		console.log(payload.toString());
+		io.sockets.emit('serverMessage',payload.toString());
 		resolve("done");
 	});
 };

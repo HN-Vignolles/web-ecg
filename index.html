@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+	<head>
+		<title>EEG</title>
+		<meta charset="utf-8"/>
+		<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no"/>
+		<link rel="stylesheet" href="main.css">
+	</head>
+	<body onload="initWebGL()">
+	<div id="wrapper">
+        <div id="main">
+            <div class="inner">
+                <div id="eeg-container">
+                    <div class="canvas-wgl">
+                        <canvas id="wf-canvas" width="800" height="800">HTML no soportado</canvas>
+                    </div>
+                    <div class="controls">
+                        <h2>Controles</h2>
+                        <span class="label">wsm:</span><span id="wsmValue"></span><br>
+                        <div class="slider-container">
+                            <div class="s-label">escalaX</div>
+                            <div class="s-slider"><input type="range" min="0" max="100" value="50" id="sXSlider"></div>
+                            <div class="s-value"><span id="sXValue">X</span></div>
+                        </div>
+						<div class="slider-container">
+                            <div class="s-label">escalaY</div>
+                            <div class="s-slider"><input type="range" min="0" max="100" value="50" id="sYSlider"></div>
+                            <div class="s-value"><span id="sYValue">Y</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+		<script>
+           var sXSlider = document.getElementById("sXSlider");
+            sXSlider.oninput = function(){
+                sX = this.value/10000;
+                sXValue.innerHTML = this.value;
+                }
+			var sYSlider = document.getElementById("sYSlider");
+            sYSlider.oninput = function(){
+                sY = this.value/10000;
+                sYValue.innerHTML = this.value;
+                }
+			/******************************************************************************/
+			var ongoingTouches = [];
+			var el = document.getElementsByTagName("canvas")[0];//The first (0) canvas
+			/*If true, useCapture indicates that the user wishes to initiate capture.
+			After initiating capture, all events of the specified type will be dispatched
+			to the registered listener before being dispatched to any EventTargets beneath
+			it in the DOM tree. Events which are bubbling upward through the tree will not
+			trigger a listener designated to use capture*/
+			el.addEventListener("touchstart",function(evt){
+				evt.preventDefault();
+				//console.log("touchstart");
+				var touches = evt.changedTouches;
+				for (var i = 0; i < touches.length; i++) {
+					//console.log("touchstart:" + i + "...");
+					ongoingTouches.push(copyTouch(touches[i]));
+					//console.log("touchstart:" + i + ".");
+					//console.log("X:",touches[i].pageX, "Y:",touches[i].pageY);
+				}
+			},false);
+			el.addEventListener("touchmove",function(evt){
+				evt.preventDefault();
+				var touches = evt.changedTouches;
+				var idx = ongoingTouchIndexById(touches[0].identifier);
+				var x = touches[0].pageX-ongoingTouches[idx].pageX;
+				var y = touches[0].pageY-ongoingTouches[idx].pageY;
+				//console.log("X:",x,"Y:",y);
+				tX += x/75.0;
+				tY -= y/75.0;
+				ongoingTouches.splice(idx, 1, copyTouch(touches[0]));
+				/*for (var i = 0; i < touches.length; i++) {
+					var idx = ongoingTouchIndexById(touches[i].identifier);
+					if (idx >= 0) {
+						//console.log("continuing touch "+idx);
+						//console.log("ctx.moveTo(" + ongoingTouches[idx].pageX + ", " + ongoingTouches[idx].pageY + ");");
+						//console.log("ctx.lineTo(" + touches[i].pageX + ", " + touches[i].pageY + ");");
+						ongoingTouches.splice(idx, 1, copyTouch(touches[i]));  // swap in the new touch record
+						//console.log(".");
+					} else {
+						console.log("can't figure out which touch to continue");
+					}
+				}*/
+			},false);
+			el.addEventListener("touchend",function(evt){
+				evt.preventDefault();
+				var touches = evt.changedTouches;
+				for (var i = 0; i < touches.length; i++) {
+					var idx = ongoingTouchIndexById(touches[i].identifier);
+					if (idx >= 0) {
+						ongoingTouches.splice(idx, 1);  // remove it; we're done
+						//console.log("touchend");
+					} else {
+						//console.log("can't figure out which touch to end");
+					}
+				}
+			},false);
+			el.addEventListener("touchcancel",function(evt){
+				evt.preventDefault();
+				//console.log("touchcancel.");
+				var touches = evt.changedTouches;
+				for (var i = 0; i < touches.length; i++) {
+					var idx = ongoingTouchIndexById(touches[i].identifier);
+					ongoingTouches.splice(idx, 1);  // remove it; we're done
+				}
+			}, false);
+			function ongoingTouchIndexById(idToFind) {
+				for (var i = 0; i < ongoingTouches.length; i++) {
+					var id = ongoingTouches[i].identifier;
+					if (id == idToFind) {
+						return i;
+					}
+				}
+				return -1;    // not found
+			}
+			function copyTouch(touch) {
+				return { identifier: touch.identifier, pageX: touch.pageX, pageY: touch.pageY };
+			}
+            /*var capture = false,
+                start = [],
+                mtX = 0,
+                mtY = 0;
+            document.addEventListener("mousedown",function(event){
+                capture = true;
+                start = [event.clientX,event.clientY];
+            },false);
+            document.addEventListener("mouseup",function(event){
+                capture = false;
+            },false);
+            document.addEventListener("mousemove",function(event){
+                if(capture){
+                var x = (event.clientX - start[0]);
+                var y = (event.clientY - start[1]);
+                start[0] = event.clientX;
+                start[1] = event.clientY;
+                mtX += x;
+                mtY += y;
+                tX += x/750.0;
+                tY -= y/750.0;
+                }
+            },false);
+            document.addEventListener("keypress",function(event){
+                if(event.key == '+')
+                    sY += 0.0001;
+                else if(event.key == '-')
+                    sY -= 0.0001;
+            },false);*/
+        </script>
+		<script src="socket.io/socket.io.js"></script>
+		<script src="colors.js"></script>
+		<script src="ip.js"></script>
+		<script src="raf_polyfill.js"></script>
+		<script src="gl-matrix-min.js"></script>
+		<script src="gl-main.js"></script>
+		<script id="shader-vs" type="x-shader/x-vertex">
+		attribute vec3 aVertexPosition;
+			vec3 aVertexPos;
+			attribute vec3 aVertexColor;
+			attribute vec3 aXVec;
+			
+			uniform mat4 uMVMatrix;
+			uniform mat4 uPMatrix;
+			
+			varying highp vec4 vColor;	
+			void main(void) { /*FIXME: NaN values in uPMatrix*/
+				aVertexPos.y = aVertexPosition.x;
+				aVertexPos.x = aXVec.x;
+                gl_Position = /*uPMatrix **/ uMVMatrix * vec4(aVertexPos, 1.0);
+				vColor = vec4(aVertexColor, 1.0);
+			}
+		</script>
+		<script id="shader-fs" type="x-shader/x-fragment">
+			varying highp vec4 vColor;
+			void main(void) {
+               gl_FragColor = vColor;
+			}
+		</script>
+	</body>
+</html>
