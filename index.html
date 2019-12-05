@@ -36,14 +36,14 @@
 			var sXSlider = document.getElementById("sXSlider");
 			var sXValue = document.getElementById("sXValue");
 			sXSlider.oninput = function(){
-				sX = this.value/10000;
-				sXValue.innerHTML = this.value/10000;
+				sX = this.value/1000;
+				sXValue.innerHTML = this.value/1000;
 			}
 			var sYSlider = document.getElementById("sYSlider");
 			var sYValue = document.getElementById("sYValue");
 			sYSlider.oninput = function(){
-				sY = this.value/10000;
-				sYValue.innerHTML = this.value/10000;
+				sY = this.value/1000000;
+				sYValue.innerHTML = this.value/1000000;
 			}
 			/******************************************************************************/
 			var ongoingTouches = [];

@@ -17,8 +17,17 @@ const vScale_fd = iio_p + "in_voltage_scale";
 const vScale = fs.readFileSync(vScale_fd);
 const vvScale_fd = iio_p + "in_voltage-voltage_scale"; 
 const vvScale = fs.readFileSync(vvScale_fd);
+const sF_fd = iio_p + "sampling_frequency";
 
 var payload = [0,0,0];
+
+try {
+	fs.writeFileSync(sF_fd,'768',{ flag: 'w'},'utf8');
+	console.log('SF: '+fs.readFileSync(sF_fd,'utf8'));
+} catch(err) {
+	console.log(err);
+	process.exit(-1);
+}
 
 process.on('SIGINT',() => {
 	process.exit(1);
@@ -35,8 +44,9 @@ var pause0 = function() {
 var main = function() {
 	return new Promise(resolve => {
 		let contents = fs.readFileSync(v1v2_raw_fd,'utf8');
+		let contents2 = fs.readFileSync(v1v2_raw_fd,'utf8');
 		//var contents = fs.readFileSync(v1_raw_fd,'utf8');
-		payload[0] = contents * vvScale;
+		payload[0] = contents * vvScale * 100;
 		//console.log(payload.toString());
 		io.sockets.emit('serverMessage',payload.toString());
 		resolve("done");
