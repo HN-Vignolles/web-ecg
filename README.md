@@ -30,3 +30,11 @@ SCK  ├──────┤ CLK (P9_22)
 GND  ├──────┤ GND
 VCC  ├──────┤ 3V3
 ```
+## uEnv.txt
+```
+enable_uboot_overlays=1
+uboot_overlay_addr7=/lib/firmware/ad7193.dtbo
+disable_uboot_overlay_adc=1
+```
+# Usage
+`node server.js`
