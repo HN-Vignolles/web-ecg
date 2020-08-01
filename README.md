@@ -1,3 +1,8 @@
+# web-ecg
+Remote (webgl + websockets) ECG monitor<br>
+https://youtu.be/vx6RYoaiHvM
+<br>
+
 ## AD8232
 *The AD8232 is an integrated signal conditioning block for ECG and other biopotential measurement applications. It is designed to extract, amplify, and filter small biopotential signals in the presence of noisy conditions, such as those created by motion or remote electrode placement.* -https://www.analog.com/media/en/technical-documentation/data-sheets/AD8232.pdf<br>
 In this project, we are using the circuit from figure 66 on the previous datasheet. (The one from fig. 68 can work too).
